@@ -1,0 +1,15 @@
+.container{
+    border: 1px solid red;
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 70%;
+    height: 50vh;
+    
+}
+h3{
+    margin-top: -50px;
+}
