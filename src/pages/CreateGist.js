@@ -34,7 +34,7 @@ export default class CreateGist extends React.Component {
         return JSON.stringify(json);
     }
     onSubmit = () => {
-        let wrapper = new GitHubWrapper;
+        let wrapper = new GitHubWrapper();
         wrapper.createGist(this.makeJson()).then(res => {console.log(res)})
     }
     render(){

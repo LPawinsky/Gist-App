@@ -13,3 +13,10 @@
 h3{
     margin-top: -50px;
 }
+ul{
+    list-style: none;
+}
+li{
+    display: inline-block;
+    margin: 10px;
+}

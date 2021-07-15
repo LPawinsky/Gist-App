@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export default class GitHubWrapper {
   constructor() {
-    this.token = "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"
+    this.token = "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"
     this.client = axios.create({
       baseURL: 'https://api.github.com/',
       responseType: 'json',
@@ -34,5 +34,14 @@ export default class GitHubWrapper {
   }
   getGist(gistId) {
     return this.getRequest(`/gists/${gistId}`)
+  }
+  async getIds(){
+    let list = [];
+    await this.getRequest('/gists').then(data => {
+      for(const key of Object.keys(data.data)){
+        list.push(data.data[key].id)
+      }
+    })
+    return list
   }
 }
