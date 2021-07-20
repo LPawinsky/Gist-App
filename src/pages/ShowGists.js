@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Wrapper from '../Wrapper';
+import Gist from './Gist';
 import '../css/ShowGists.css';
 
 export default class ShowGists extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            id: [],
             loading: true,
             data: [],
             filename: [],
             content: '',
             description: '',
+            isShown: 'hidden',
+            setIsShown: false,
+            count: 0,
         }
     };
     async componentDidMount(){
@@ -28,9 +33,13 @@ export default class ShowGists extends React.Component{
                         this.setState(prevState => ({
                             filename: [...prevState.filename, value.filename]
                         }))
+                        this.setState(prevState => ({
+                            id: [...prevState.id, data.data.id]
+                        }))
+                        this.setState({ count: this.state.count+1 })
                     }
                     this.setState({ loading: false, data: newVal })
-                    console.log(this.state.filename)
+                    console.log(this.state.id)
                 })
             })
         })
@@ -38,10 +47,11 @@ export default class ShowGists extends React.Component{
     render(){
         return(
             <div className="container">
+                <h3 className="counter">You have {this.state.count} gists!</h3>
                 <ul>
-                {this.state.loading || this.state.data === [] ? (
-                <div>Loading...</div>
-                ) : (this.state.filename.map((value, i) => <li  key={i}>{value}</li>))}
+                {this.state.loading || this.state.data === [] ? (<div>Loading...</div>) : (this.state.id.map(id => (
+                    <Gist id={id}/>
+                )))}
                 </ul>
             </div>
         )

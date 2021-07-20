@@ -10,13 +10,24 @@
     height: 50vh;
     
 }
-h3{
-    margin-top: -50px;
+.hidden{
+    display: none;
 }
-ul{
-    list-style: none;
-}
-li{
+.visible{
     display: inline-block;
-    margin: 10px;
+}
+.listItem{
+    border: 1px solid red;
+    display: inline-block;
+    margin-left: 10px;
+    height: 10vh;
+    width: 20vh;
+    text-align: center;
+    justify-content: space-around;
+}
+li:hover ~ .btn{
+    display: block;
+}
+.counter{
+    padding: 20px;
 }
