@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export default class GitHubWrapper {
   constructor() {
-    this.token = "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"
+    this.token = "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"
     this.client = axios.create({
       baseURL: 'https://api.github.com/',
       responseType: 'json',
