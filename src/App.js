@@ -15,10 +15,9 @@ export default class App extends React.Component {
           <div className="App">
             <Nav />
             <Switch>
-              <Route path="/" exact component={Home} />
+              <Route path="/" exact component={ShowGists} />
               <Route path="/create_gist" component={CreateGist}/>
-              <Route path="/edit_gist" component={EditGist} />
-              <Route path="/show_gists" component={ShowGists} />
+              <Route path="/edit_gist" component={EditGist} render={(props) => <EditGist {...props}/>}/>
               <Route path="/delete_gist" component={DeleteGist} />
             </Switch>
           </div>

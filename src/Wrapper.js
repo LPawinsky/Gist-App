@@ -2,7 +2,7 @@ const axios = require('axios');
 
 export default class GitHubWrapper {
   constructor() {
-    this.token = "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"
+    this.token = "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"
     this.client = axios.create({
       baseURL: 'https://api.github.com/',
       responseType: 'json',
@@ -28,6 +28,9 @@ export default class GitHubWrapper {
   }
   createGist(payload) {
     return this.postRequest('/gists', payload)
+  }
+  editGist(gistId, payload){
+    return this.postRequest(`/gists/${gistId}`, payload)
   }
   deleteGist(gistId){
     return this.deleteRequest(`/gists/${gistId}`)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Wrapper from '../Wrapper';
 import Gist from './Gist';
 import '../css/ShowGists.css';
@@ -17,16 +17,12 @@ export default class ShowGists extends React.Component{
             setIsShown: false,
             count: 0,
         }
+        this.wrapper = new Wrapper()
     };
     async componentDidMount(){
-        let wrapper = new Wrapper();
-        // pobranie wszystkich id
-        await wrapper.getIds().then(data => {
-            //pętla przez pobrane dane
+        await this.wrapper.getIds().then(data => {
             data.forEach((id,index) => {
-                //pobranie gistow o danych id
-               wrapper.getGist(id).then(data => {
-                    // petla podająca wszystkie id
+               this.wrapper.getGist(id).then(data => {
                     const newVal = this.state.data;
                     for(const [key, value] of Object.entries(data.data.files)){
                         newVal.push(value);
@@ -39,9 +35,17 @@ export default class ShowGists extends React.Component{
                         this.setState({ count: this.state.count+1 })
                     }
                     this.setState({ loading: false, data: newVal })
-                    console.log(this.state.id)
+                    console.log(this.state.data)
                 })
             })
+        })
+    };
+    handleDelete = (gistId) => {
+        this.wrapper.deleteGist(gistId).then(()=> {
+            this.setState({
+                id: this.state.id.filter(id => id !== gistId),
+                count: this.state.count-1
+                })
         })
     };
     render(){
@@ -50,7 +54,7 @@ export default class ShowGists extends React.Component{
                 <h3 className="counter">You have {this.state.count} gists!</h3>
                 <ul>
                 {this.state.loading || this.state.data === [] ? (<div>Loading...</div>) : (this.state.id.map(id => (
-                    <Gist id={id}/>
+                    <Gist handleDelete={this.handleDelete} id={id}/>
                 )))}
                 </ul>
             </div>

@@ -10,9 +10,7 @@
     height: 50vh;
     
 }
-.hidden{
-    display: none;
-}
+
 .visible{
     display: inline-block;
 }
