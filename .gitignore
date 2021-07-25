@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /src/Wrapper.js
+.env
 
 # testing
 /coverage

@@ -1,4 +1,6 @@
 .container{
+    display: flex;
+    flex-direction: column;
     border: 1px solid red;
     text-align: center;
     justify-content: center;
@@ -7,25 +9,20 @@
     top: 50%;
     transform: translate(-50%,-50%);
     width: 70%;
-    height: 50vh;
-    
+}
+.btn{
+    display: flex;
+    justify-content: space-between;
+}
+.gist-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-items: center;
+
+}
+.list-item{
+    list-style-type: none;
+    border: 1px solid red;
 }
 
-.visible{
-    display: inline-block;
-}
-.listItem{
-    border: 1px solid red;
-    display: inline-block;
-    margin-left: 10px;
-    height: 10vh;
-    width: 20vh;
-    text-align: center;
-    justify-content: space-around;
-}
-li:hover ~ .btn{
-    display: block;
-}
-.counter{
-    padding: 20px;
-}

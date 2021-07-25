@@ -1,33 +1,27 @@
 import React from 'react';
 import Wrapper from '../Wrapper'
+import { Redirect } from 'react-router-dom';
 
 export default class EditGist extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            loading: false,
+            redirect: false,
             id: this.props.location.state.id
         }
         this.wrapper = new Wrapper()
     }
-    componentDidMount(props){
-        console.log(this.state.id)
+    componentDidMount(){
         this.wrapper.getGist(this.state.id).then(res => {
-                for(const [key,value] of Object.entries(res.data.files)){
+            this.setState({ description: res.data.description })
+                for(const [key, value] of Object.entries(res.data.files)){
                     this.setState({
-                        description: res.data.description,
-                        filename: value.filename,
+                        filename: key,
                         content: value.content
                     })
-                    
                }
-               console.log(this.state)
-               console.log(res.data.files)
             }
         )
-    }
-    componentDidUpdate(){
-        console.log(this.state)
     }
     handleDescription = (e) => {
         this.setState({ description: e.target.value });
@@ -51,30 +45,32 @@ export default class EditGist extends React.Component{
         return JSON.stringify(json);
     }
     onSubmit = () => {
-        this.wrapper.editGist(this.state.id, this.makeJson()).then(res => {
-            console.log(res);
+        this.wrapper.editGist(this.state.id, this.makeJson()).then(() => {
+            this.setState({ redirect: true })
         })
     }
-    checkMouse = e => {
-        console.log(e)
-    }
     render(){
-        return(
-            <div>
-                <h1>Edit <b>'{this.state.filename}'</b> gist!</h1>
-                <div className="form_container">
-                    <form tabIndex="0" id="create_form">
-                        <fieldset>
-                            <div className="bace-inputs">
-                                <input type="text" placeholder="Enter a gist description" id="description" name="description" defaultValue={this.state.description} onChange={this.handleDescription} />
-                                <input readOnly="true" type="text" placeholder="Filename including extension" id="filename" name="filename" defaultValue={this.state.filename} onChange={this.handleFilename} />
-                            </div>
-                            <textarea tabIndex="-1" onKeyDown={this.onKeyPressed} id="code" rows="5" cols="60" name="code" placeholder="Enter a code" defaultValue={this.state.content} onChange={this.handleCodeInput}></textarea>
-                        </fieldset>
-                        <button type="button" onMouseUp={this.checkMouse} onClick={this.onSubmit}>Submit!</button>
-                    </form>
+        if(this.state.redirect === false){
+            return(
+                <div>
+                    <h1>Edit <b>'{this.state.filename}'</b> gist!</h1>
+                    <div className="form_container">
+                        <form tabIndex="0" id="create_form">
+                            <fieldset>
+                                <div className="bace-inputs">
+                                    <input type="text" placeholder="Enter a gist description" id="description" name="description" defaultValue={this.state.description} onChange={this.handleDescription} />
+                                    <input readOnly="true" type="text" placeholder="Filename including extension" id="filename" name="filename" defaultValue={this.state.filename} onChange={this.handleFilename} />
+                                </div>
+                                <textarea tabIndex="-1" id="code" rows="5" cols="60" name="code" placeholder="Enter a code" defaultValue={this.state.content} onChange={this.handleCodeInput}></textarea>
+                            </fieldset>
+                            <button type="button" onClick={this.onSubmit}>Submit!</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
+        if(this.state.redirect === true) {
+            return <Redirect to='/' />
+        }
     }
 }

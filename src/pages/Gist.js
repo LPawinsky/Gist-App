@@ -1,9 +1,7 @@
 import React from 'react';
 import Wrapper from '../Wrapper'
-import EditGist from './EditGist'
-import '../css/Gist.css';
-import { Redirect, useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import '../css/ShowGists.css';
+import { Redirect } from 'react-router-dom';
 
 export default class Gist extends React.Component {
     constructor(props){
@@ -11,21 +9,19 @@ export default class Gist extends React.Component {
         this.state = {
             filename: '',
             description: '',
-            isShown: 'btn',
             redirect: false,
         }
     }
     gistData = async (id) => {
         let wrapper = new Wrapper();
-        await wrapper.getGist(id).then(res => {
-            for(const [key,value] of Object.entries(res.data.files)){
+        await wrapper.getGist(id).then(data => {
+            for(const value of Object.keys(data.data.files)){
                 this.setState({
-                    filename: value.filename,
-                    description: res.data.description
+                    filename: value,
+                    description: data.data.description
                 })
             }
         })
-        console.log(this.state)
     }
     componentDidMount(){
         this.gistData(this.props.id)
@@ -50,11 +46,11 @@ export default class Gist extends React.Component {
                 }}/>
         }
         return(
-            <li className="list-item" onMouseOver={this.handleHover} onMouseLeave={this.handleMouseLeave} key={this.props.id}> 
-                {this.state.filename}<br />
-                {this.state.description}
-                <button className={this.state.isShown} onClick={this.deleteGist}>Delete</button>
-                <button className={this.state.isShown}  onClick={this.editGist}>Edit</button>
+            <li className="list-item" key={this.props.id}> 
+                <p className="filename">{this.state.filename}</p><br />
+                <p className="description">{this.state.description}</p>
+                <button className="btn" onClick={this.deleteGist}>Delete</button>
+                <button className="btn"  onClick={this.editGist}>Edit</button>
             </li>
         )
     }

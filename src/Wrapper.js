@@ -2,12 +2,11 @@ const axios = require('axios');
 
 export default class GitHubWrapper {
   constructor() {
-    this.token = "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"
+    this.token = localStorage.getItem('token')
     this.client = axios.create({
       baseURL: 'https://api.github.com/',
       responseType: 'json',
       headers: {
-        'X-Custom-Header': this.token,
         'Accept': 'application/vnd.github.v3+json',
         'Authorization': 'token ' + this.token
       }
