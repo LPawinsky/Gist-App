@@ -1,6 +1,6 @@
 import React from 'react';
 import GitHubWrapper from '../Wrapper';
-import '../css/CreateGist.css'
+import '../styles/CreateGist.css';
 import { Redirect } from 'react-router-dom';
 
 export default class CreateGist extends React.Component {
@@ -61,7 +61,7 @@ export default class CreateGist extends React.Component {
                             </div>
                             <textarea tabIndex="0" id="code" rows="5" cols="60" name="code" placeholder="Enter a code" defaultValue={this.state.content} onChange={this.handleCodeInput}></textarea>
                         </fieldset>
-                        <button type="button" onClick={this.onSubmit}>Submit!</button>
+                        <button className="btn edit-btn" type="button" onClick={this.onSubmit}>Submit!</button>
                     </form>
                 </div>
             </div>
