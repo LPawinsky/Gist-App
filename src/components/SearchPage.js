@@ -21,8 +21,6 @@ export default function SearchPage(){
     const wrapper = new Wrapper();
 
     const fetchGists = async () => {
-        localStorage.setItem('token', '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')
-
         await wrapper.getIds().then(id => {
             if(id.length === 0){
                 setIsLoading(false)

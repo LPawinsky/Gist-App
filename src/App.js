@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import CreateGist from './components/CreateGist';
 import EditGist from './components/EditGist';
 import './styles/App.css';
@@ -8,16 +8,23 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
 
-export default class App extends React.Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      isTokenWritten: false
-    }
+export default function App() {
+  const [isTokenWritten, setIsTokenWritten] = useState(false);
+  const [token, setToken] = useState('')
+
+  const setActualToken = e => {
+    setToken(e.target.value)
   }
-  render(){
-    return (
-      <div className="App">
+  const setLocalToken = () => {
+    localStorage.setItem('token', token)
+    setIsTokenWritten(true)
+  }
+  return (
+    <div className="App">
+      {!isTokenWritten ? <div className="token-setup">
+        <input onChange={setActualToken} placeholder="Input your token"/>
+        <button onClick={setLocalToken}>Show my gists!</button>
+      </div> : 
         <Router>
           <Nav />
           <Switch>
@@ -26,7 +33,7 @@ export default class App extends React.Component {
             <Route path="/edit_gist" component={EditGist}/>
           </Switch>
         </Router>
-      </div>
-    );
-  }
+      }
+    </div>
+  );
 }
