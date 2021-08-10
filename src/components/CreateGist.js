@@ -61,7 +61,7 @@ export default class CreateGist extends React.Component {
                             </div>
                             <textarea tabIndex="0" id="code" rows="5" cols="60" name="code" placeholder="Enter a code" defaultValue={this.state.content} onChange={this.handleCodeInput}></textarea>
                         </fieldset>
-                        <button className="btn edit-btn" type="button" onClick={this.onSubmit}>Submit!</button>
+                        <button className="btn submit-btn" type="button" onClick={this.onSubmit}>Submit!</button>
                     </form>
                 </div>
             </div>

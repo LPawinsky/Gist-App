@@ -89,3 +89,18 @@
 .del-btn:hover + .del-btn-icon{
     transform: scale(1.6)
 }
+.submit-btn{
+    background: white;
+    color: rgb(58, 103, 252);
+    border: 1px solid rgb(58,103,252);
+    border-radius: 20px;
+    transition-duration: .1s;
+    height: 3vh;
+    margin: 1vh;
+}
+.submit-btn:hover{
+    transform: scale(1.05);
+    color: white;
+    background: rgb(58, 103, 252);
+    width: 60%;
+}

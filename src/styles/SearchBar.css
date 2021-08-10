@@ -1,0 +1,11 @@
+.search-bar{
+    width: 50%;
+    transition-duration: 0.2s;
+}
+.search-bar:focus{
+    width: 60%;
+    height: 3vh;
+    font-size: 2vh;
+    border-radius: 10px;
+    border: 1px solid lightblue;
+}

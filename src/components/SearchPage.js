@@ -1,130 +1,112 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Wrapper from '../Wrapper';
 import Gist from './Gist';
 import SearchBar from './SearchBar';
 import ReactPaginate from 'react-paginate'
 import '../styles/SearchPage.css'
 
-export default class SearchPage extends React.Component{
-    constructor(props){
-        super(props)
-        this.state = {
-            loading: true,
-            defaultList: false,
-            pagination: true,
-            shownGists: [],
-            setShownGists : [],
-            count: 0,
-            pageNumber: 0,
-            setPageNumber: 0,
-            gistsPerPage: 8,
-            pagesVisited: 0
-        }
-        this.wrapper = new Wrapper()
-    }
-    async componentDidMount(){
-        localStorage.setItem('token', '')
-        await this.wrapper.getIds().then(id => {
+export default function SearchPage(){
+    const gistArray = []
+    const [defaultList, setDefaultList] = useState([])
+    const [shownGists, setShownGists] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [count, setCount] = useState(0);
+
+    const [pageNumber, setPageNumber] = useState(0)
+    
+    const gistsPerPage = 8
+    const pagesVisited = pageNumber * gistsPerPage;
+    const pageCount = Math.ceil(shownGists.length / gistsPerPage)
+
+    const wrapper = new Wrapper();
+
+    const fetchGists = async () => {
+        localStorage.setItem('token', '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')
+
+        await wrapper.getIds().then(id => {
             if(id.length === 0){
-                this.setState({ loading: false })
+                setIsLoading(false)
             }
-            else{
-            id.map(id => {
-                this.wrapper.getGist(id).then(gist => {
+            else {
+            id.map(gistId => {
+                wrapper.getGist(gistId).then(gist => {
                     for(const [key,value] of Object.entries(gist.data.files)){
                         const newGist = {
                             filename: key.toString(),
                             content: value.content,
-                            description: gist.data.description,
+                            description:gist.data.description,
                             id: gist.data.id,
                             language: value.language
                         }
-                        this.setState(prevState => ({
-                            shownGists: [...prevState.shownGists, newGist],
-                            setShownGists: [...prevState.setShownGists, newGist],
-                            count: this.state.count+1
-                        }))
-                        console.log(this.state.shownGists)
+                        gistArray.push(newGist)
                     }
-                    this.setState({
-                        loading: false,
-                        pageNumber: 0,
-                        setPageNumber: 0,
-                        gistsPerPage: 8,
-                        pagesVisited: this.state.pageNumber * this.state.gistsPerPage,
-                        pageCount: Math.ceil(this.state.shownGists.length / this.state.gistsPerPage)
-                    })
+                    if(id.length===gistArray.length){
+                        setIsLoading(false)
+                        setCount(gistArray.length)
+                    }
+                    setShownGists(gistArray)
+                    setDefaultList(gistArray)
                 })
-                return id
-            },() => {
-                console.log('loaded!')
             })
-        }
-        })
+        }})
     }
-    handleDelete = gistId => {
-        this.wrapper.deleteGist(gistId).then(()=> {
-            this.setState({
-                shownGists: this.state.setShownGists.filter(gist => gist.id !== gistId),
-                setShownGists: this.state.setShownGists.filter(gist => gist.id !== gistId),
-                count: this.state.count-1,
-            })
+    useEffect(() => {
+        fetchGists();
+    }, [])
+
+    const handleDelete = (gistId) => {
+        wrapper.deleteGist(gistId).then(()=> {
+            setShownGists(shownGists.filter(gist => gist.id !== gistId));
+            setCount(count - 1)
         })
     };
-    onChange = e => {
+    const onChange = e => {
         
-        const filteredFilename = this.state.shownGists.filter(gist => gist.filename.toLowerCase().includes(e.target.value.toLowerCase()))
+        const filteredFilename = shownGists.filter(gist => gist.filename.toLowerCase().includes(e.target.value.toLowerCase()))
+        setPageNumber(0)
 
         if(e.target.value !== ''){
-            this.setState({ shownGists: filteredFilename })
+            setShownGists(filteredFilename)
         }
         if(e.target.value === ''){
-            this.setState({ shownGists: this.state.setShownGists })
+            setShownGists(defaultList)
         }
-        if(filteredFilename.length === 0){
-            this.setState({ defaultList: true })
-        }
-        if(filteredFilename.length !== 0){
-            this.setState({ defaultList: false })
-        }
-        if(e.target.value === "" && filteredFilename.length !== 0){
-            this.setState({ defaultList: false })
+        if(shownGists.length === 0){
+            console.log("absolute zero")
         }
     }
-    changePage = ({selected}) => {
-        this.setState({ setPageNumber: selected})
+    const changePage = ({selected}) => {
+        setPageNumber(selected)
     }
-    render(){
-        return(
+    const displayGists = shownGists.slice(pagesVisited, pagesVisited + gistsPerPage).map(gist => {
+        return <Gist handleDelete={handleDelete} data={gist} key={gist.id} />
+    })
+    // const displayGists = shownGists.map(gist => {
+    //     return <Gist handleDelete={handleDelete} data={gist} key={gist.id} />
+    // })
+    return(
+        <div>
+            {isLoading ? <div>Loading...</div> : (
             <div className="container">
-                <SearchBar input={this.state.input} onInputChange={this.onChange} />
-                <h3 className="counter">You have {this.state.count === 0 ? ('no') : (this.state.count)} {(this.state.count === 1 ? ('gist') : ('gists'))}</h3>
+                <SearchBar onInputChange={onChange} />
+                <h3 className="counter">You have {count === 0 ? ('no') : (count)} {(count === 1 ? ('gist') : ('gists'))}</h3>
                 <ul className="gist-container">
-                    {
-                    
-                    this.state.defaultList ? (<div>Nothing to show!</div>) : (this.state.loading ? (<div>Loading...</div>) : (this.state.shownGists.length === 0 ? (<div>Nothing to show!</div>) : (
-                        this.state.pagination ? ((this.state.shownGists.slice(this.state.pagesVisited, this.state.pagesVisited + this.state.gistsPerPage).map(gist => {
-                            return <Gist handleDelete={this.handleDelete} key={gist.id} data={gist}/>
-                        }))) : (<div>no pagination</div>)
-                    )))}
-                    
-                    {/* (this.state.shownGists.map(gist => {
-                        return <Gist handleDelete={this.handleDelete} key={gist.id} data={gist}/>
-                    })) */}
-
+                    {shownGists.length === 0 ? <div>No gists you have, my master</div> : (displayGists)}
                     <ReactPaginate
-                        previousLabel={"Previous"}
-                        nextLabel={"Next"}
-                        pageCount={this.state.pageCount}
-                        onPageChange={this.changePage}
-                        containerClassName={'paginationBtn'}
-                        previousLinkClassName={'previousBtn'}
-                        nextLinkClassName={'nextBtn'}
-                        disabledClassName={'paginationDisabled'}
-                        activeClassName={'paginationActive'}
-                    />
+                    previousLabel={"Previous"}
+                    nextLabel={"Next"}
+                    pageCount={pageCount}
+                    onPageChange={changePage}
+                    containerClassName={"pagination-btns"}
+                    previousLinkClassName={"previous-btn"}
+                    nextLinkClassName={"next-btn"}
+                    disabledClassName={"pagination-disabled"}
+                    activeClassName={"pagination-active"}
+                />
                 </ul>
+                
             </div>
-        )
-    }
+            )}
+        </div>
+    )
 }
