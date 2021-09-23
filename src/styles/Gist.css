@@ -18,8 +18,8 @@
     box-shadow: 1px 1px 10px black;
     background: rgb(219, 242, 250);
     margin: 12px;
-    height: 15vw;
-    width: 15vw;
+    height: 13vw;
+    width: 13vw;
     transition-duration: .1s;
 }
 .list-item:hover{

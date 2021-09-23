@@ -28,7 +28,7 @@ export default class Gist extends React.Component{
             return <Redirect 
                 to={{
                     pathname: '/edit_gist',
-                    state: { id: this.props.data.id}
+                    state: { id: this.props.data.id }
                 }}/>
         }
         return(

@@ -2,41 +2,42 @@ import React, { useState, useEffect } from 'react';
 import Wrapper from '../Wrapper';
 import Gist from './Gist';
 import SearchBar from './SearchBar';
-import ReactPaginate from 'react-paginate'
-import '../styles/SearchPage.css'
+import ReactPaginate from 'react-paginate';
+import '../styles/SearchPage.css';
 
 export default function SearchPage(){
-    const gistArray = []
-    const [defaultList, setDefaultList] = useState([])
+    const gistArray = [];
+    const [defaultList, setDefaultList] = useState([]);
     const [shownGists, setShownGists] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [count, setCount] = useState(0);
 
-    const [pageNumber, setPageNumber] = useState(0)
+    const [pageNumber, setPageNumber] = useState(0);
     
-    const gistsPerPage = 8
+    const gistsPerPage = 8;
     const pagesVisited = pageNumber * gistsPerPage;
-    const pageCount = Math.ceil(shownGists.length / gistsPerPage)
+    const pageCount = Math.ceil(shownGists.length / gistsPerPage);
 
     const wrapper = new Wrapper();
 
-    const fetchGists = async () => {
+    useEffect(async () => {
         await wrapper.getIds().then(id => {
             if(id.length === 0){
-                setIsLoading(false)
+                setIsLoading(false);
             }
             else {
             id.map(gistId => {
                 wrapper.getGist(gistId).then(gist => {
                     for(const [key,value] of Object.entries(gist.data.files)){
+                        console.log(key)
                         const newGist = {
                             filename: key.toString(),
                             content: value.content,
-                            description:gist.data.description,
+                            description: gist.data.description,
                             id: gist.data.id,
                             language: value.language
                         }
-                        gistArray.push(newGist)
+                        gistArray.push(newGist) 
                     }
                     if(id.length===gistArray.length){
                         setIsLoading(false)
@@ -45,15 +46,13 @@ export default function SearchPage(){
                     setShownGists(gistArray)
                     setDefaultList(gistArray)
                 })
+                return gistId
             })
         }})
-    }
-    useEffect(() => {
-        fetchGists();
     }, [])
 
     const handleDelete = (gistId) => {
-        wrapper.deleteGist(gistId).then(()=> {
+        wrapper.deleteGist(gistId).then((res)=> {
             setShownGists(shownGists.filter(gist => gist.id !== gistId));
             setCount(count - 1)
         })
@@ -74,14 +73,17 @@ export default function SearchPage(){
         }
     }
     const changePage = ({selected}) => {
+        console.log("selected  " + selected)
+        console.log("pagenumber " + pageNumber)
+        console.log(pageCount)
+        if(shownGists.length % 8 === 0 && pageCount === shownGists.length / 8){
+            setPageNumber(0)
+        }
         setPageNumber(selected)
     }
     const displayGists = shownGists.slice(pagesVisited, pagesVisited + gistsPerPage).map(gist => {
         return <Gist handleDelete={handleDelete} data={gist} key={gist.id} />
     })
-    // const displayGists = shownGists.map(gist => {
-    //     return <Gist handleDelete={handleDelete} data={gist} key={gist.id} />
-    // })
     return(
         <div>
             {isLoading ? <div>Loading...</div> : (
@@ -89,7 +91,7 @@ export default function SearchPage(){
                 <SearchBar onInputChange={onChange} />
                 <h3 className="counter">You have {count === 0 ? ('no') : (count)} {(count === 1 ? ('gist') : ('gists'))}</h3>
                 <ul className="gist-container">
-                    {shownGists.length === 0 ? <div>No gists you have, my master</div> : (displayGists)}
+                    {shownGists.length === 0 ? <div className="no-gists">No gists you have, my master</div> : (displayGists)}
                     <ReactPaginate
                     previousLabel={"Previous"}
                     nextLabel={"Next"}

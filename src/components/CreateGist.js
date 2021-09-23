@@ -39,13 +39,17 @@ export default class CreateGist extends React.Component {
         let wrapper = new GitHubWrapper();
         if(this.state.filename.includes('.')){
             wrapper.createGist(this.makeJson()).then(res => {
-                console.log(res)
+                console.log("public or not? " + res.data.public)
                 this.setState({ redirect: true })
             })
         }
         if(!this.state.filename.includes('.')){
             alert('Wrong filename. Refactor your file')
         }
+    }
+    publicCheck = e => {
+        this.setState(prevState => ({public: !prevState.public}))
+        console.log(this.state.public)
     }
     render(){
         if(!this.state.redirect){
@@ -54,6 +58,7 @@ export default class CreateGist extends React.Component {
                 <h1>Create a gist!</h1>
                 <div className="form_container">
                     <form tabIndex="0" id="create_form">
+                        <input type="checkbox" onClick={this.publicCheck} />
                         <fieldset>
                             <div className="bace-inputs">
                                 <input type="text" placeholder="Enter a gist description" id="description" name="description" defaultValue={this.state.description} onChange={this.handleDescription} />

@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-export default class GitHubWrapper {
+export default class Wrapper {
   constructor() {
     this.token = localStorage.getItem('token')
     this.client = axios.create({

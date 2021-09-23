@@ -32,3 +32,8 @@
     color: white;
     background-color: rgb(71, 71, 240)
 }
+.no-gists{
+    font-size: 1.5vw;
+    justify-content: center;
+    align-self: center;
+}

@@ -7,7 +7,8 @@ export default class EditGist extends React.Component{
         super(props);
         this.state = {
             redirect: false,
-            id: this.props.location.state.id
+            id: this.props.location.state.id,
+            public: true
         }
         this.wrapper = new Wrapper()
     }
@@ -35,7 +36,7 @@ export default class EditGist extends React.Component{
     makeJson = () => {
         const json = {
             description: this.state.description,
-            public: true,
+            public: this.state.public,
             "files": {
                 [this.state.filename]: {
                     content: this.state.content,
@@ -45,9 +46,15 @@ export default class EditGist extends React.Component{
         return JSON.stringify(json);
     }
     onSubmit = () => {
-        this.wrapper.editGist(this.state.id, this.makeJson()).then(() => {
+        this.wrapper.editGist(this.state.id, this.makeJson()).then(res => {
+            console.log(res.data)
             this.setState({ redirect: true })
         })
+    }
+    publicCheck = () => {
+        if(this.state.public === true){ this.setState({ public: false }) }
+        else{ this.setState({ public: true }) }
+        console.log(this.state.public)
     }
     render(){
         if(this.state.redirect === false){
@@ -55,6 +62,8 @@ export default class EditGist extends React.Component{
                 <div>
                     <h1>Edit <b>'{this.state.filename}'</b> gist!</h1>
                     <div className="form_container">
+                        <input type="checkbox" onChange={this.publicCheck} />
+                        <p>Secret or not?</p>
                         <form tabIndex="0" id="create_form">
                             <fieldset>
                                 <div className="bace-inputs">

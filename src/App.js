@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import CreateGist from './components/CreateGist';
 import EditGist from './components/EditGist';
 import './styles/App.css';
@@ -15,6 +15,11 @@ export default function App() {
   const setActualToken = e => {
     setToken(e.target.value)
   }
+  const handleEnter = e => {
+    if(e.code === "Enter"){
+      setLocalToken()
+    }
+  }
   const setLocalToken = () => {
     localStorage.setItem('token', token)
     setIsTokenWritten(true)
@@ -22,7 +27,7 @@ export default function App() {
   return (
     <div className="App">
       {!isTokenWritten ? <div className="token-setup">
-        <input onChange={setActualToken} placeholder="Input your token"/>
+        <input onKeyDown={handleEnter} onChange={setActualToken} placeholder="Input your token"/>
         <button onClick={setLocalToken}>Show my gists!</button>
       </div> : 
         <Router>
